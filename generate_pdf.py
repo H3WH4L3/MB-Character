@@ -1,8 +1,8 @@
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import NameObject, BooleanObject, TextStringObject
 
-SRC = "character_sheet.pdf"
-DST = "new.pdf"
+SRC = "pdf_files/character_sheet.pdf"
+DST = "pdf_files/new.pdf"
 
 reader = PdfReader(SRC)
 writer = PdfWriter()
