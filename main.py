@@ -35,7 +35,7 @@ class Character:
         #region Наратив
         self.memories = random.choice(character["Memories"])
         self.terrible_trait = random.choice(narrative["Terrible_trait"])
-        self.injures = random.choice(narrative["Injuries"])
+        self.injuries = random.choice(narrative["Injuries"])
         self.bad_habbits = random.choice(narrative["Bad_habbits"])
         self.dangerous_past = random.choice(narrative["Dangerous_past"])
         self.secret_quest = random.choice(narrative["Secret_quest"])

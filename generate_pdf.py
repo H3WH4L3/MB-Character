@@ -1,7 +1,7 @@
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import NameObject, BooleanObject, TextStringObject
 
-SRC = "pdf_files/character_sheet.pdf"
+SRC = "pdf_files/prepare_sheet.pdf"
 DST = "pdf_files/new.pdf"
 
 reader = PdfReader(SRC)
@@ -25,27 +25,35 @@ for ref in page.get("/Annots", []):
 
 def create_new_character_list(character):
     data = {
-        "Text1" : character.name,
-        "Text2" : character.description,
-        "Text3" : character.clas,
-        "Text8" : character.hp,
-        "Text9" : character.hp,
-        "Text10" : character.weapon,
-        "Text12" : character.armor[0],
-        f"Check Box{34 + character.armor[1]}" : '/0',
-        "Text13" : character.first_item,
-        "Text14" : character.second_item,
-        "Text15" : character.third_item,
-        "Text29" : character.strength,
-        "Text30" : character.agility,
-        "Text31" : character.presence,
-        "Text32" : character.toughness,
-        "Money" : character.money,
-        "Omen" : character.signs
+        "name" : character.name,
+        "description" : character.description,
+        "clas" : character.clas,
+        "hp_current" : character.hp,
+        "hp_max" : character.hp,
+        "weapon_1" : character.weapon,
+        "armor" : character.armor[0],
+        f"armor_{character.armor[1]}" : '/0',
+        "item_1" : character.first_item,
+        "item_2" : character.second_item,
+        "item_3" : character.third_item,
+        "strength" : character.strength,
+        "agility" : character.agility,
+        "presence" : character.presence,
+        "toughness" : character.toughness,
+        "money" : character.money,
+        "signs" : character.signs,
+        
+        # Вторая страница
+        "terrible_trait" : character.terrible_trait,
+        "injuries" : character.injuries,
+        "bad_habbits" : character.bad_habbits,
+        "dangerous_past" : character.dangerous_past,
+        "secret_quest" : character.secret_quest,
+        "memmories" : character.memories
     }
-    x = 4
+    x = 1
     for key, value in character.skills.items():
-        data[f"Text{x}"] = f"{key}: {value}"
+        data[f"skill{x}"] = f"{key}: {value}"
         x += 1
     
     writer.update_page_form_field_values(page, data)
