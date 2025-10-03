@@ -85,8 +85,6 @@ def create_character():
 
     # Создаем персонажа
     new_character = Character(choosen_class, all_items, all_narrative)
-    
-    # Генерируем персонажа
-    create_new_character_list(new_character)
+    return new_character
 
-create_character()
+new_character = create_character()
