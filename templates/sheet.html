@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>{{ Basic.name | default('Персонаж') }} — Лист</title>
+  <link rel="stylesheet" href="{{ css_uri }}" />
+</head>
+<body>
+  <div id="sheet">
+    <div class="bg" style="background-image: url('{{ bg_uri }}');"></div>
+
+    <header class="block">
+      <div class="title">{{ Basic.name or '—' }}</div>
+      <div class="subtitle">Признаков: {{ Basic.signs or 0 }} · Серебро: {{ Basic.money or 0 }}</div>
+    </header>
+
+    <section class="grid">
+      <!-- Основное -->
+      <div class="block core">
+        <div class="row">
+          <span class="label">HP</span>
+          <span class="value">{{ Basic.hp or 0 }}</span>
+        </div>
+
+        <div class="abilities">
+          <div class="ability">
+            AGI <b>{{ Basic.abilities.agility | default(10, true) }}</b>
+            <div class="mod">({{ '%+d' % ( (mods.agility | default(0, true)) | int ) }})</div>
+          </div>
+          <div class="ability">
+            PRE <b>{{ Basic.abilities.presence | default(10, true) }}</b>
+            <div class="mod">({{ '%+d' % ( (mods.presence | default(0, true)) | int ) }})</div>
+          </div>
+          <div class="ability">
+            STR <b>{{ Basic.abilities.strength | default(10, true) }}</b>
+            <div class="mod">({{ '%+d' % ( (mods.strength | default(0, true)) | int ) }})</div>
+          </div>
+          <div class="ability">
+            TOU <b>{{ Basic.abilities.toughness | default(10, true) }}</b>
+            <div class="mod">({{ '%+d' % ( (mods.toughness | default(0, true)) | int ) }})</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Навыки (dict) -->
+      <div class="block traits">
+        <div class="block-title">НАВЫКИ</div>
+        <ul>
+          {% for sk, text in (Basic.skills or {}).items() %}
+            <li><b>{{ sk }}</b><br><span class="small">{{ text | replace('\n', '<br>') | safe }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Снаряжение -->
+      <div class="block equipment">
+        <div class="block-title">СНАРЯЖЕНИЕ</div>
+        <ul>
+          {% set armor_name = (Items.armor or ['','0'])[0] %}
+          {% set armor_val = (Items.armor or ['','0'])[1] %}
+          <li><b>Броня:</b> {{ armor_name }}{% if armor_val %} ({{ armor_val }}){% endif %}</li>
+
+          {% if Items.weapon %}<li><b>Оружие:</b> {{ Items.weapon }}</li>{% endif %}
+          {% if Items.first_item %}<li>{{ Items.first_item }}</li>{% endif %}
+          {% if Items.second_item %}<li>{{ Items.second_item }}</li>{% endif %}
+          {% if Items.third_item %}<li>{{ Items.third_item }}</li>{% endif %}
+        </ul>
+      </div>
+
+      <!-- Бонус/лут -->
+      <div class="block notes clip">
+        <div class="block-title">БОНУС</div>
+        <div class="text">{{ Basic.bonus | replace('\n', '<br>') | safe }}</div>
+      </div>
+
+      <!-- Описание -->
+      <div class="block notes">
+        <div class="block-title">ОПИСАНИЕ</div>
+        <div class="text">{{ Basic.description | replace('\n', '<br>') | safe }}</div>
+      </div>
+
+      <!-- Характер -->
+      <div class="block">
+        <div class="block-title">ЧЕРТЫ ХАРАКТЕРА И ПРОШЛОЕ</div>
+        <ul>
+          {% if Character.terrible_trait %}<li><b>Тёмная черта:</b> {{ Character.terrible_trait }}</li>{% endif %}
+          {% if Character.injuries %}<li><b>Травмы:</b> {{ Character.injuries }}</li>{% endif %}
+          {% if Character.bad_habbit %}<li><b>Плохая привычка:</b> {{ Character.bad_habbit }}</li>{% endif %}
+          {% if Character.dangerous_past %}<li><b>Опасное прошлое:</b> {{ Character.dangerous_past }}</li>{% endif %}
+          {% if Character.secret_quest %}<li><b>Тайная цель:</b> {{ Character.secret_quest }}</li>{% endif %}
+          {% if Character.memorie %}<li><b>Память:</b> {{ Character.memorie }}</li>{% endif %}
+        </ul>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

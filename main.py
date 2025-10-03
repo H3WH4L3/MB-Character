@@ -50,10 +50,14 @@ class Character:
 
     def make_weapon(self, items):
         weapon = random.choice(items["Weapon"])
+        weapon_result = {
+            "weapon_name" : weapon[0],
+            "weapon_damage" : weapon[1]
+            }
         if len(weapon) == 3:
-            weapon_result =  f"{weapon[0]}, Урон: {weapon[1]} (Количество снарядов: {weapon[2]})"
-        else:
-            weapon_result = f"{weapon[0]}, Урон: {weapon[1]}"
+            atr, value = weapon[2]
+            ability_value = getattr(self, atr)
+            weapon_result["weapon_arrows"] = value + ability_value
         return weapon_result
     
     def check_to_scroll(self, items, tir):
@@ -68,9 +72,6 @@ class Character:
                 return random.choice(items["Scrolls"]["Sacred_scroll"])
             else:
                 return item
-
-    def __str__(self):
-        return f"{self.armor}"
 
 def create_character():
     # Выбираем класс
@@ -119,7 +120,7 @@ def create_json_character(character):
             "third_item" : character.third_item,
         }
     }
-    with open("character.json", "w", encoding="UTF-8") as file:
+    with open("data/character.json", "w", encoding="UTF-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=2)
 
 new_character = create_character()
