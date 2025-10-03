@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>{{ Basic.name | default('Персонаж') }} — Лист</title>
-  <link rel="stylesheet" href="{{ css_uri }}" />
+  <link rel="stylesheet" href="templates/styles.css" />
 </head>
 <body>
   <div id="sheet">
@@ -25,19 +25,15 @@
         <div class="abilities">
           <div class="ability">
             AGI <b>{{ Basic.abilities.agility | default(10, true) }}</b>
-            <div class="mod">({{ '%+d' % ( (mods.agility | default(0, true)) | int ) }})</div>
           </div>
           <div class="ability">
             PRE <b>{{ Basic.abilities.presence | default(10, true) }}</b>
-            <div class="mod">({{ '%+d' % ( (mods.presence | default(0, true)) | int ) }})</div>
           </div>
           <div class="ability">
             STR <b>{{ Basic.abilities.strength | default(10, true) }}</b>
-            <div class="mod">({{ '%+d' % ( (mods.strength | default(0, true)) | int ) }})</div>
           </div>
           <div class="ability">
             TOU <b>{{ Basic.abilities.toughness | default(10, true) }}</b>
-            <div class="mod">({{ '%+d' % ( (mods.toughness | default(0, true)) | int ) }})</div>
           </div>
         </div>
       </div>

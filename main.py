@@ -1,8 +1,13 @@
 import random
 import json
+from render import make_new_sheet
+
+DATA_FOLDER = "data/"
+FILE_NAME = "character.json"
+MG_BASE = "mork_borg_cache.json"
 
 # Выгружаем базу
-with open("mork_borg_cache.json", "r", encoding="UTF-8") as file:
+with open(DATA_FOLDER + MG_BASE, "r", encoding="UTF-8") as file:
     data = json.load(file)
 
 class Character:
@@ -20,7 +25,8 @@ class Character:
 
         #region Атрибуты : agility, presence, strength, toughness
         for ability, value in character["Abilities"].items():
-            setattr(self, ability, value[0] * random.randint(1, value[1]) + value[2])
+            dice_check = sum([random.randint(1, value[1]) for _ in range(value[0])]) + value[2]
+            setattr(self, ability, dice_check)
         #endregion
 
         #region Главные значения
@@ -120,8 +126,9 @@ def create_json_character(character):
             "third_item" : character.third_item,
         }
     }
-    with open("data/character.json", "w", encoding="UTF-8") as file:
+    with open(DATA_FOLDER + FILE_NAME, "w", encoding="UTF-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=2)
 
 new_character = create_character()
 create_json_character(new_character)
+make_new_sheet()
