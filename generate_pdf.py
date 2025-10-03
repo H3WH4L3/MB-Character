@@ -1,5 +1,5 @@
 from pypdf import PdfReader, PdfWriter
-from pypdf.generic import NameObject, BooleanObject, TextStringObject
+from pypdf.generic import NameObject, BooleanObject, TextStringObject, ArrayObject, FloatObject
 
 SRC = "pdf_files/prepare_sheet.pdf"
 DST = "pdf_files/new.pdf"
@@ -14,17 +14,27 @@ if "/AcroForm" in writer._root_object:
         {NameObject("/NeedAppearances"): BooleanObject(True)}
     )
 
+page1 = writer.pages[0]
+page2 = writer.pages[1]
 
-page = writer.pages[0]
 
-for ref in page.get("/Annots", []):
-    annot = ref.get_object()
-    if annot.get("/FT") == "/Tx":  # только текстовые поля
-        annot.update({NameObject("/DA"): TextStringObject("/Helv 8 Tf 0 g")})
-        annot.pop(NameObject("/AP"), None)  # удалить старый вид, чтобы перерисовалось
+def _normalize_rects(page):
+    """Заменяет /Rect у аннотаций на прямые числа (вместо IndirectObject)."""
+    for ref in page.get("/Annots", []):
+        annot = ref.get_object()
+        rect = annot.get("/Rect")
+        if rect:
+            def num(v):
+                try:
+                    v = v.get_object()
+                except AttributeError:
+                    pass
+                return float(v)
+            vals = [num(v) for v in rect]
+            annot.update({NameObject("/Rect"): ArrayObject([FloatObject(v) for v in vals])})
 
 def create_new_character_list(character):
-    data = {
+    data1 = {
         "name" : character.name,
         "description" : character.description,
         "clas" : character.clas,
@@ -32,7 +42,7 @@ def create_new_character_list(character):
         "hp_max" : character.hp,
         "weapon_1" : character.weapon,
         "armor" : character.armor[0],
-        f"armor_{character.armor[1]}" : '/0',
+        f"armor_{character.armor[1]}" : "0",
         "item_1" : character.first_item,
         "item_2" : character.second_item,
         "item_3" : character.third_item,
@@ -42,8 +52,8 @@ def create_new_character_list(character):
         "toughness" : character.toughness,
         "money" : character.money,
         "signs" : character.signs,
-        
-        # Вторая страница
+    }
+    data2 = {
         "terrible_trait" : character.terrible_trait,
         "injuries" : character.injuries,
         "bad_habbits" : character.bad_habbits,
@@ -53,10 +63,13 @@ def create_new_character_list(character):
     }
     x = 1
     for key, value in character.skills.items():
-        data[f"skill{x}"] = f"{key}: {value}"
+        data1[f"skill{x}"] = f"{key}: {value}"
         x += 1
-    
-    writer.update_page_form_field_values(page, data)
+
+    writer.update_page_form_field_values(page1, data1)
+
+    _normalize_rects(page2)
+    writer.update_page_form_field_values(page2, data2)
 
     with open(DST, "wb") as f:
         writer.write(f)
