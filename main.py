@@ -1,6 +1,5 @@
 import random
 import json
-from generate_pdf import create_new_character_list
 
 # Выгружаем базу
 with open("mork_borg_cache.json", "r", encoding="UTF-8") as file:
@@ -33,10 +32,10 @@ class Character:
         #endregion
 
         #region Наратив
-        self.memories = random.choice(character["Memories"])
+        self.memorie = random.choice(character["Memories"])
         self.terrible_trait = random.choice(narrative["Terrible_trait"])
         self.injuries = random.choice(narrative["Injuries"])
-        self.bad_habbits = random.choice(narrative["Bad_habbits"])
+        self.bad_habbit = random.choice(narrative["Bad_habbits"])
         self.dangerous_past = random.choice(narrative["Dangerous_past"])
         self.secret_quest = random.choice(narrative["Secret_quest"])
         #endregion
@@ -87,4 +86,41 @@ def create_character():
     new_character = Character(choosen_class, all_items, all_narrative)
     return new_character
 
+def create_json_character(character):
+    data = {
+        "Basic" : {
+            "name" : character.name,
+            "description" : character.description,
+            "hp" : character.hp,
+            "money" : character.money,
+            "signs" : character.signs,
+            "skills" : character.skills,
+            "abilities" : {
+                "agility" : character.agility,
+                "presence" : character.presence,
+                "strength" : character.strength,
+                "toughness" : character.toughness
+            },
+            "bonus" : character.bonus
+        },
+        "Character" : {
+            "terrible_trait" : character.terrible_trait,
+            "injuries" : character.injuries,
+            "bad_habbit" : character.bad_habbit,
+            "dangerous_past" : character.dangerous_past,
+            "secret_quest" : character.secret_quest,
+            "memorie" : character.memorie
+        },
+        "Items" : {
+            "armor" : character.armor,
+            "weapon" : character.weapon,
+            "first_item" : character.first_item,
+            "second_item" : character.second_item,
+            "third_item" : character.third_item,
+        }
+    }
+    with open("character.json", "w", encoding="UTF-8") as file:
+        json.dump(data, file, ensure_ascii=False, indent=2)
+
 new_character = create_character()
+create_json_character(new_character)
